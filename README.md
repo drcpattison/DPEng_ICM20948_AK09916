@@ -5,5 +5,7 @@ DPEng's ICM-20948 Breakout Board is specifically developed for this library with
 
 <b>PLEASE NOTE: Amazon and Ebay links will be provided here when the DPEng ICM 20948 Breakout Board is released so it is highly recommended to watch this repository to receive an update when it is in stock!!</b>
 
+<b>UPDATE 5th March 2019: The breakout boards have arrived and will be listed on Ebay tomorrow and Amazon as soon as practicable.</b>
+
 Additional Libraries Required: 
 The Adafruit Sensor library is required.
