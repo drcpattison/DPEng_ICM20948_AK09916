@@ -2,8 +2,11 @@
  * @file DPEng_ICM20948_AK09916.h
  *
  * This header file is part of DPEng's ICM20948 driver for the Arduino platform.  It is
- * designed specifically to work with the DPEng ICM20948 breakout board:
- * [AMAZON & EBAY ICM-20948 BREAKOUT BOARD PRODUCT LINKS ARE COMING SOON!!!]
+ * designed specifically to work with the DPEng ICM20948 breakout board which can be 
+ * purchased from eBay here:
+ * https://www.ebay.co.uk/itm/323724746939
+ * or Amazon here:
+ * https://www.amazon.co.uk/DP-Eng-ICM-20948-Breakout-obsolete/dp/B07PDTKK3Y
  *
  * These sensors use I2C to communicate, 2 pins (SCL+SDA) are required
  * to interface with the breakout. SPI is also possible with <2 MBIT/s speeds.
