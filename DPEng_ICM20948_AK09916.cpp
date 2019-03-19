@@ -7,8 +7,10 @@
  *
  * This is the documentation for DPEng's ICM20948 driver for the
  * Arduino platform.  It is designed specifically to work with the
- * DPEng ICM20948 breakout:
- * [AMAZON & EBAY ICM-20948 BREAKOUT BOARD PRODUCT LINKS ARE COMING SOON!!!]
+ * DPEng ICM20948 breakout which can be purchased from eBay here:
+ * https://www.ebay.co.uk/itm/323724746939
+ * or Amazon here
+ * https://www.amazon.co.uk/DP-Eng-ICM-20948-Breakout-obsolete/dp/B07PDTKK3Y
  *
  * These sensors use I2C to communicate, 2 pins (SCL+SDA) are required
  * to interface with the breakout. SPI is also possible with <2 MBIT/s speeds.
