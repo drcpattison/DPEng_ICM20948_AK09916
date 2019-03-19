@@ -5,7 +5,7 @@ DP Eng's ICM-20948 Breakout Board is specifically developed for this library wit
 
 <b><a href="https://www.ebay.co.uk/itm/323724746939">DP Eng ICM-20948 Breakout Board Ebay Link with international shipping</a></b>
 
-<b><a href="https://www.amazon.co.uk/DP-Eng-ICM-20948-Breakout-obsolete/dp/B07PDTKK3Y">DP Eng ICM-20948 Amazon.co.uk link</b>
+<b><a href="https://www.amazon.co.uk/DP-Eng-ICM-20948-Breakout-obsolete/dp/B07PDTKK3Y">DP Eng ICM-20948 Amazon.co.uk link</a></b>
 
 Additional Libraries Required: 
-The Adafruit Sensor library is required.
+<a href="https://github.com/adafruit/Adafruit_Sensor">The Adafruit Sensor library is required.</a>
