@@ -230,6 +230,23 @@ bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rn
   reg1 = reg1 & ~0x06;  // Clear AFS bits [2:1]
   
   /* Configure the accelerometer */
+  /* Set ACCEL_CONFIG (0x14)
+   ====================================================================
+   BIT  Symbol    		Description                                   Default
+   ---  ------    		--------------------------------------------- -------
+   7:6  -	 		Reserved                                   		  -
+   5:3  ACCEL_DLFPFCFG[2:0] 	Accelerometer low pass filter                     000
+		  		000 = 246 Hz / 1209 Hz if FCHOICE is 0
+                  		001 = 246 Hz
+                  		010 = 111.4 Hz
+                  		011 = 50.4 Hz
+                  		100 = 23.9 Hz
+                  		101 = 11.5 Hz
+                  		110 = 5.7 Hz
+                  		111 = 473 Hz
+   2:1  ACCEL_FS_SEL[1:0]   	Accelerometer Full Scale Select                    00
+     0  ACCEL_FCHOICE           0 :Bypass accel DLPF, 1 :Enable accel DLPF          1
+  */
   switch (_rangeAccel) {
       case (ICM20948_ACCELRANGE_2G):
         reg1 = reg1 | ICM20948_ACCELRANGE_2G; // Set full scale range for the accelerometer
@@ -246,47 +263,28 @@ bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rn
   }
   reg1 = reg1 | 0x01; // Set enable accel DLPF for the accelerometer
   reg1 = reg1 | 0x18; // and set DLFPFCFG to 50.4 hz
+	
   // Write new ACCEL_CONFIG register value
   write8(ACCEL_CONFIG, reg1);
 
   write8(ACCEL_SMPLRT_DIV_2, 0x14);
-  
-    /* Set ACCEL_CONFIG (0x14)
-   ====================================================================
-   BIT  Symbol    Description                                   Default
-   ---  ------    --------------------------------------------- -------
-   7:6  -	      Reserved                                   		  -
-   5:3  DLFPFCFG  Accelerometer low pass filter                     000
-				  000 = 246 Hz / 1209 Hz if FCHOICE is 0
-                  001 = 246 Hz
-                  010 = 111.4 Hz
-                  011 = 50.4 Hz
-                  100 = 23.9 Hz
-                  101 = 11.5 Hz
-                  110 = 5.7 Hz
-                  111 = 473 Hz
-   2:1  FS_SEL    Accelerometer Full Scale Select                    00
-     0  READY     Standby(0)/Ready(1)                                 0
-  */
-
-  /* Set CTRL_REG0 (0x0D)  Default value 0x00
+	
+  /* Set GYRO_CONFIG_1 to selected DPS Range - Default value 0x01 (250 dps)
   =====================================================================
-  BIT  Symbol     Description                                   Default
-  7:6  BW         cut-off frequency of low-pass filter               00
-    5  SPIW       SPI interface mode selection                        0
-  4:3  SEL        High-pass filter cutoff frequency selection        00
-    2  HPF_EN     High-pass filter enable                             0
-  1:0  FS         Full-scale range selection
-                  00 = +-2000 dps
-                  01 = +-1000 dps
-                  10 = +-500 dps
-                  11 = +-250 dps
-  The bit fields in CTRL_REG0 should be changed only in Standby or Ready modes.
+  BIT  Symbol     		Description                                   Default
+  7:6  -          		Reserved				           00
+  5:3  GYRO_DLPFCFG[2:0]	Gyro low pass filter configuration                000
+  2:1  GYRO_FS_SEL[1:0]        	Gyro Full Scale Select:				   00
+		 		00 = +-250 dps
+                  		01 = +-500 dps
+                  		10 = +-1000 dps
+                  		11 = +-2000 dps  
+    0  GYRO_FCHOICE    		0 :Bypass gyro DLPF, 1 :Enable gyro DLPF            1
+
   */
 
-
-  /* Reset then switch to active mode with 100Hz output */
-  uint8_t ctrlReg0 = 0x00;
+  /* Instantiate ctrlReg0 */
+  uint8_t ctrlReg0 = 0x01;
   /* Configure the gyroscope */
   switch(_rangeGyro)
   {
@@ -306,7 +304,7 @@ bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rn
 
   write8(GYRO_CONFIG_1, ctrlReg0); // Set sensitivity
   delay(100); // 60 ms + 1/ODR
-  write8(GYRO_SMPLRT_DIV, 0x0A); // Set sensitivity
+  write8(GYRO_SMPLRT_DIV, 0x0A); // Set gyro sample rate divider
   
   // Switch to user bank 0
   write8(REG_BANK_SEL, 0x00);
