@@ -186,7 +186,7 @@ DPEng_ICM20948::DPEng_ICM20948(int32_t accelSensorID, int32_t gyroSensorID, int3
      @return True if the device was successfully initialized, otherwise false.
  */
  /**************************************************************************/
-bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rngGyro)
+bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rngGyro, icm20948AccelLowpass_t lowAccel)
 {
   /* Enable I2C */
   Wire.begin();
@@ -262,7 +262,7 @@ bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rn
       break;
   }
   reg1 = reg1 | 0x01; // Set enable accel DLPF for the accelerometer
-  reg1 = reg1 | 0x18; // and set DLFPFCFG to 50.4 hz
+  reg1 = reg1 | lowAccel; // and set DLFPFCFG to 50.4 hz
 	
   // Write new ACCEL_CONFIG register value
   write8(ACCEL_CONFIG, reg1);
