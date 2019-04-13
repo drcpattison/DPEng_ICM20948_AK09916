@@ -536,6 +536,184 @@ bool DPEng_ICM20948::getEvent(sensors_event_t* accelEvent, sensors_event_t* gyro
 
 /**************************************************************************/
 /*!
+    @brief  Gets the most accelerometer recent sensor events.
+
+            This function reads only the accelerometer. The function has been
+            reduced in complexity to speed up the execution.
+
+    @param    accelEvent
+              A reference to the sensors_event_t instances where the
+              accelerometer data should be written.
+
+    @return True if the event read was successful, otherwise false.
+*/
+/**************************************************************************/
+bool DPEng_ICM20948::getEventAcc(sensors_event_t* accelEvent)
+{
+  /* Clear the event */
+  memset(accelEvent, 0, sizeof(sensors_event_t));
+
+  /* Clear the raw data placeholder */
+  accel_raw.x = 0;
+  accel_raw.y = 0;
+  accel_raw.z = 0;
+
+  /* Set the static metadata */
+  accelEvent->version   = sizeof(sensors_event_t);
+  accelEvent->sensor_id = _accelSensorID;
+  accelEvent->type      = SENSOR_TYPE_ACCELEROMETER;
+
+  /* Read 6 bytes from the icm20948 sensor */
+  Wire.beginTransmission((byte)ICM20948_ACCELGYRO_ADDRESS);
+  #if ARDUINO >= 100
+    Wire.write(ACCEL_XOUT_H);
+  #else
+    Wire.send(ACCEL_XOUT_H);
+  #endif
+  Wire.endTransmission();
+  Wire.requestFrom((byte)ICM20948_ACCELGYRO_ADDRESS, (byte)6);
+
+  /* ToDo: Check status first! */
+  #if ARDUINO >= 100
+    uint8_t axhi = Wire.read();
+    uint8_t axlo = Wire.read();
+    uint8_t ayhi = Wire.read();
+    uint8_t aylo = Wire.read();
+    uint8_t azhi = Wire.read();
+    uint8_t azlo = Wire.read();
+  #else
+    uint8_t axhi = Wire.receive();
+    uint8_t axlo = Wire.receive();
+    uint8_t ayhi = Wire.receive();
+    uint8_t aylo = Wire.receive();
+    uint8_t azhi = Wire.receive();
+    uint8_t azlo = Wire.receive();
+  #endif
+
+  /* Set the timestamps */
+  accelEvent->timestamp = millis();
+
+  /* Shift values to create properly formed integers */
+  /* Note, accel data is 14-bit and left-aligned, so we shift two bit right */
+  accelEvent->acceleration.x = (int16_t)((axhi << 8) | axlo);
+  accelEvent->acceleration.y = (int16_t)((ayhi << 8) | aylo);
+  accelEvent->acceleration.z = (int16_t)((azhi << 8) | azlo);
+
+  /* Assign raw values in case someone needs them */
+  accel_raw.x = accelEvent->acceleration.x;
+  accel_raw.y = accelEvent->acceleration.y;
+  accel_raw.z = accelEvent->acceleration.z;
+
+  /* Convert accel values to m/s^2 */
+  switch (_rangeAccel) {
+      case (ICM20948_ACCELRANGE_2G):
+          accelEvent->acceleration.x *= ACCEL_MG_LSB_2G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.y *= ACCEL_MG_LSB_2G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.z *= ACCEL_MG_LSB_2G * SENSORS_GRAVITY_STANDARD;
+      break;
+      case (ICM20948_ACCELRANGE_4G):
+          accelEvent->acceleration.x *= ACCEL_MG_LSB_4G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.y *= ACCEL_MG_LSB_4G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.z *= ACCEL_MG_LSB_4G * SENSORS_GRAVITY_STANDARD;
+      break;
+      case (ICM20948_ACCELRANGE_8G):
+          accelEvent->acceleration.x *= ACCEL_MG_LSB_8G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.y *= ACCEL_MG_LSB_8G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.z *= ACCEL_MG_LSB_8G * SENSORS_GRAVITY_STANDARD;
+      break;
+	  case (ICM20948_ACCELRANGE_16G):
+          accelEvent->acceleration.x *= ACCEL_MG_LSB_16G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.y *= ACCEL_MG_LSB_16G * SENSORS_GRAVITY_STANDARD;
+          accelEvent->acceleration.z *= ACCEL_MG_LSB_16G * SENSORS_GRAVITY_STANDARD;
+      break;
+  }
+
+  return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets the most recent sensor events.
+
+            This function reads only the magnetometer. The function has been
+            reduced in complexity to speed up the execution.
+
+	@param	  magEvent
+			  A reference to the sensors_event_t instances where the
+			  magnetometer data should be written.
+
+    @return True if the event read was successful, otherwise false.
+*/
+/**************************************************************************/
+bool DPEng_ICM20948::getEventMag(sensors_event_t* magEvent)
+{
+  /* Clear the event */
+  memset(magEvent, 0, sizeof(sensors_event_t));
+
+  /* Clear the raw data placeholder */
+  mag_raw.x = 0;
+  mag_raw.y = 0;
+  mag_raw.z = 0;
+
+  /* Set the static metadata */  
+  magEvent->version   = sizeof(sensors_event_t);
+  magEvent->sensor_id = _magSensorID;
+  magEvent->type      = SENSOR_TYPE_MAGNETIC_FIELD;
+  
+  /* Read 7 bytes from the AK09916 sensor */
+  Wire.beginTransmission((byte)ICM20948_MAG_ADDRESS);
+  #if ARDUINO >= 100
+    Wire.write(AK09916_XOUT_L);
+  #else
+    Wire.send(AK09916_XOUT_L);
+  #endif
+  Wire.endTransmission();
+  Wire.requestFrom((byte)ICM20948_MAG_ADDRESS, (byte)8);
+
+  #if ARDUINO >= 100
+    uint8_t mxlo = Wire.read();
+    uint8_t mxhi = Wire.read();
+    uint8_t mylo = Wire.read();
+    uint8_t myhi = Wire.read();
+    uint8_t mzlo = Wire.read();
+    uint8_t mzhi = Wire.read();
+	uint8_t reset = Wire.read();
+	uint8_t status = Wire.read();
+  #else
+    uint8_t mxlo = Wire.receive();
+    uint8_t mxhi = Wire.receive();
+    uint8_t mylo = Wire.receive();
+    uint8_t myhi = Wire.receive();
+    uint8_t mzlo = Wire.receive();
+    uint8_t mzhi = Wire.receive();
+	uint8_t reset = Wire.receive();
+	uint8_t status = Wire.receive();
+  #endif
+
+  /* Set the timestamps */
+  magEvent->timestamp = millis();
+
+  /* Shift values to create properly formed integers */
+  /* Note, accel data is 14-bit and left-aligned, so we shift two bit right */
+  magEvent->magnetic.x = (int16_t)((mxhi << 8) | mxlo);
+  magEvent->magnetic.y = (int16_t)((myhi << 8) | mylo);
+  magEvent->magnetic.z = (int16_t)((mzhi << 8) | mzlo);
+
+  /* Assign raw values in case someone needs them */
+  mag_raw.x = magEvent->magnetic.x;
+  mag_raw.y = magEvent->magnetic.y;
+  mag_raw.z = magEvent->magnetic.z;
+  
+  /* Convert mag values to uTesla */
+  magEvent->magnetic.x *= MAG_UT_LSB;
+  magEvent->magnetic.y *= MAG_UT_LSB;
+  magEvent->magnetic.z *= MAG_UT_LSB;
+
+  return true;
+}
+
+/**************************************************************************/
+/*!
     @brief  Gets sensor_t data for both the accel, gyro and mag in one operation.
 
     @param    accelSensor
