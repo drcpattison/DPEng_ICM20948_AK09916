@@ -287,7 +287,7 @@ class DPEng_ICM20948 : public Adafruit_Sensor
   public:
     DPEng_ICM20948(int32_t accelSensorID = -1, int32_t gyroSensorID = -1, int32_t magSensorID = -1);
 
-    bool begin           ( icm20948AccelRange_t rngAccel = ICM20948_ACCELRANGE_2G, icm20948GyroRange_t rngGyro = GYRO_RANGE_250DPS, icm20948AccelLowpass_t lowAccel = ICM20948_ACCELLOWPASS_50_4_HZ );
+    bool begin           ( icm20948AccelRange_t rngAccel = ICM20948_ACCELRANGE_2G, icm20948GyroRange_t rngGyro = GYRO_RANGE_250DPS, icm20948AccelLowpass_t lowpassAccel = ICM20948_ACCELLOWPASS_50_4_HZ );
     bool getEventAcc     ( sensors_event_t* accel );
     bool getEventMag     ( sensors_event_t* mag );
     bool getEvent        ( sensors_event_t* accel );
