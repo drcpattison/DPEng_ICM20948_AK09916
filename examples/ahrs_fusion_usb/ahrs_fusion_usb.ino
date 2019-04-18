@@ -41,7 +41,7 @@ void setup()
   Serial.println(F("DPEng AHRS Fusion Example")); Serial.println("");
 
   // Initialize the sensors.
-  if(!dpEng.begin(ICM20948_ACCELRANGE_4G, GYRO_RANGE_250DPS))
+  if(!dpEng.begin(ICM20948_ACCELRANGE_4G, GYRO_RANGE_250DPS, ICM20948_ACCELLOWPASS_50_4_HZ))
   {
     /* There was a problem detecting the ICM20948 ... check your connections */
     Serial.println("Ooops, no ICM20948/AK09916 detected ... Check your wiring!");

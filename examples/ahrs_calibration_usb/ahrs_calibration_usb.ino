@@ -22,7 +22,7 @@ void setup()
   Serial.println(F("DPEng 9 DOF AHRS Calibration Example")); Serial.println("");
 
   // Initialize the sensors.
-  if(!dpEng.begin(ICM20948_ACCELRANGE_4G, GYRO_RANGE_250DPS))
+  if(!dpEng.begin(ICM20948_ACCELRANGE_4G, GYRO_RANGE_250DPS, ICM20948_ACCELLOWPASS_50_4_HZ))
   {
     /* There was a problem detecting the sensor ... check your connections */
     Serial.println("Ooops, no sensor detected ... Check your wiring!");
