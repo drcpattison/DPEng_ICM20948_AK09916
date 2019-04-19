@@ -50,7 +50,7 @@ void displaySensorDetails(void)
 
 void setup(void)
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   /* Wait for the Serial Monitor */
   while (!Serial) {
@@ -60,7 +60,7 @@ void setup(void)
   Serial.println("ICM20948 Test"); Serial.println("");
 
   /* Initialise the sensor */
-  if(!dpEng.begin(ICM20948_ACCELRANGE_4G, GYRO_RANGE_250DPS))
+  if(!dpEng.begin(ICM20948_ACCELRANGE_4G, GYRO_RANGE_250DPS, ICM20948_ACCELLOWPASS_50_4_HZ))
   {
     /* There was a problem detecting the ICM20948 ... check your connections */
     Serial.println("Ooops, no ICM20948/AK09916 detected ... Check your wiring!");

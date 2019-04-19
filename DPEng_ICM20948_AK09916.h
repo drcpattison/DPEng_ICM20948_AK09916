@@ -247,6 +247,20 @@
       GYRO_RANGE_1000DPS = 1000,    /**< 1000dps */
       GYRO_RANGE_2000DPS = 2000     /**< 2000dps */
     } icm20948GyroRange_t;
+
+    /*!
+        Lowpass settings for the accelerometer sensor.
+    */
+    typedef enum
+    {
+      ICM20948_ACCELLOWPASS_473_0_HZ        = (0b111 << 3),
+      ICM20948_ACCELLOWPASS_246_0_HZ        = (0b001 << 3),
+      ICM20948_ACCELLOWPASS_111_4_HZ        = (0b010 << 3),
+      ICM20948_ACCELLOWPASS_50_4_HZ         = (0b011 << 3),
+      ICM20948_ACCELLOWPASS_23_9_HZ         = (0b100 << 3),
+      ICM20948_ACCELLOWPASS_11_5_HZ         = (0b101 << 3),
+      ICM20948_ACCELLOWPASS_5_7_HZ          = (0b110 << 3)
+    } icm20948AccelLowpass_t;
 /*=========================================================================*/
 
 /*=========================================================================
@@ -273,7 +287,9 @@ class DPEng_ICM20948 : public Adafruit_Sensor
   public:
     DPEng_ICM20948(int32_t accelSensorID = -1, int32_t gyroSensorID = -1, int32_t magSensorID = -1);
 
-    bool begin           ( icm20948AccelRange_t rngAccel = ICM20948_ACCELRANGE_2G, icm20948GyroRange_t rngGyro = GYRO_RANGE_250DPS );
+    bool begin           ( icm20948AccelRange_t rngAccel = ICM20948_ACCELRANGE_2G, icm20948GyroRange_t rngGyro = GYRO_RANGE_250DPS, icm20948AccelLowpass_t lowpassAccel = ICM20948_ACCELLOWPASS_50_4_HZ );
+    bool getEventAcc     ( sensors_event_t* accel );
+    bool getEventMag     ( sensors_event_t* mag );
     bool getEvent        ( sensors_event_t* accel );
     void getSensor       ( sensor_t* accel );
     bool getEvent        ( sensors_event_t* accel, sensors_event_t* gyro, sensors_event_t* mag );
