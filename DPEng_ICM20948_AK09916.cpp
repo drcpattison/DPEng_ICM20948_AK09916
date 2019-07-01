@@ -80,7 +80,7 @@ void DPEng_ICM20948::write8(byte address, byte reg, byte value)
 /**************************************************************************/
 void DPEng_ICM20948::write8(byte reg, byte value)
 {
-  Wire.beginTransmission(ICM20948_ACCELGYRO_ADDRESS);
+  Wire.beginTransmission(_accelgyro_address);
   #if ARDUINO >= 100
     Wire.write((uint8_t)reg);
     Wire.write((uint8_t)value);
@@ -130,14 +130,14 @@ byte DPEng_ICM20948::read8(byte reg)
 {
   byte value;
 
-  Wire.beginTransmission((byte)ICM20948_ACCELGYRO_ADDRESS);
+  Wire.beginTransmission((byte)_accelgyro_address);
   #if ARDUINO >= 100
     Wire.write((uint8_t)reg);
   #else
     Wire.send(reg);
   #endif
   if (Wire.endTransmission(false) != 0) return 0;
-  Wire.requestFrom((byte)ICM20948_ACCELGYRO_ADDRESS, (byte)1);
+  Wire.requestFrom((byte)_accelgyro_address, (byte)1);
   #if ARDUINO >= 100
     value = Wire.read();
   #else
@@ -188,10 +188,12 @@ DPEng_ICM20948::DPEng_ICM20948(int32_t accelSensorID, int32_t gyroSensorID, int3
      @return True if the device was successfully initialized, otherwise false.
  */
  /**************************************************************************/
-bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rngGyro, icm20948AccelLowpass_t lowpassAccel)
+bool DPEng_ICM20948::begin(icm20948AccelRange_t rngAccel, icm20948GyroRange_t rngGyro, icm20948AccelLowpass_t lowpassAccel, uint8_t accelgyro_address)
 {
   /* Enable I2C */
   Wire.begin();
+
+  _accelgyro_address = accelgyro_address;
 
   /* Set the range the an appropriate value */
   _rangeAccel = rngAccel;
@@ -383,14 +385,14 @@ bool DPEng_ICM20948::getEvent(sensors_event_t* accelEvent, sensors_event_t* gyro
   magEvent->type      = SENSOR_TYPE_MAGNETIC_FIELD;
 
   /* Read 12 bytes from the icm20948 sensor */
-  Wire.beginTransmission((byte)ICM20948_ACCELGYRO_ADDRESS);
+  Wire.beginTransmission((byte)_accelgyro_address);
   #if ARDUINO >= 100
     Wire.write(ACCEL_XOUT_H);
   #else
     Wire.send(ACCEL_XOUT_H);
   #endif
   Wire.endTransmission();
-  Wire.requestFrom((byte)ICM20948_ACCELGYRO_ADDRESS, (byte)12);
+  Wire.requestFrom((byte)_accelgyro_address, (byte)12);
 
   /* ToDo: Check status first! */
   #if ARDUINO >= 100
@@ -566,14 +568,14 @@ bool DPEng_ICM20948::getEventAcc(sensors_event_t* accelEvent)
   accelEvent->type      = SENSOR_TYPE_ACCELEROMETER;
 
   /* Read 6 bytes from the icm20948 sensor */
-  Wire.beginTransmission((byte)ICM20948_ACCELGYRO_ADDRESS);
+  Wire.beginTransmission((byte)_accelgyro_address);
   #if ARDUINO >= 100
     Wire.write(ACCEL_XOUT_H);
   #else
     Wire.send(ACCEL_XOUT_H);
   #endif
   Wire.endTransmission();
-  Wire.requestFrom((byte)ICM20948_ACCELGYRO_ADDRESS, (byte)6);
+  Wire.requestFrom((byte)_accelgyro_address, (byte)6);
 
   /* ToDo: Check status first! */
   #if ARDUINO >= 100
