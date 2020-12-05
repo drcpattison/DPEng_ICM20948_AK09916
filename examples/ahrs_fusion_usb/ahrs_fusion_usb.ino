@@ -78,7 +78,7 @@ void loop(void)
   // Update the filter
   filter.update(gx, gy, gz,
                 accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
-                mx, my, mz);
+                my, mx, mz);
 
   // Print the orientation filter output
   // Note: To avoid gimbal lock you should read quaternions not Euler
