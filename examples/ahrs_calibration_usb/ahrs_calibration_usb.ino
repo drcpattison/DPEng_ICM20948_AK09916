@@ -57,9 +57,9 @@ void loop(void)
     Serial.print(dpEng.gyro_raw.z);
     Serial.print(',');
 
-    Serial.print(dpEng.mag_raw.x);
-    Serial.print(',');
     Serial.print(dpEng.mag_raw.y);
+    Serial.print(',');
+    Serial.print(dpEng.mag_raw.x);
     Serial.print(',');
     Serial.print(dpEng.mag_raw.z);
     Serial.println();
